@@ -1,0 +1,7 @@
+/.env
+/.idea
+/.vscode
+/build/*
+!/build/index.html
+/node_modules
+package-lock.json
