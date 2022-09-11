@@ -11,4 +11,4 @@ Collect as many juicy souls as you can (bat souls also count) before the certain
 
 Hold **TAP** or **SPACE**, or **LEFT MOUSE BUTTON** to elevate and fire.
 
-[[PLAY]](https://tricsi.github.io/deathrider/dist/)
+[[PLAY]](https://tricsi.github.io/deathrider/build/)
