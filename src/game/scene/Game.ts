@@ -1,4 +1,4 @@
-import { MUSIC, SPEED } from "../../config";
+import { STATE, MUSIC, SPEED } from "../../config";
 import { Node2D } from "../../core/2d/Node2D";
 import { mixer, play } from "../../modules/audio";
 import { IEvent, on } from "../../modules/event";
@@ -28,7 +28,7 @@ export class Game extends Node2D {
     bullets = new Bullets(this.skull.pos)
     theme: AudioBufferSourceNode
 
-    constructor(life: number) {
+    constructor() {
         super()
         this.add(this.hud)
             .add(this.ground)
@@ -52,7 +52,7 @@ export class Game extends Node2D {
             if (!this.runs) {
                 SPEED[X] = -100
                 this.hud.start()
-                this.skull.start(life)
+                this.skull.start(STATE.life)
                 this.blocks.clear()
                 this.graves.clear()
                 this.bullets.clear()

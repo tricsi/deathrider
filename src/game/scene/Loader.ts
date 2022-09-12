@@ -14,7 +14,6 @@ import { Overlay } from "./Overlay";
 
 export class Loader extends Node2D {
 
-    life = 0
     logo = new Sprite2D(createSprite("logo"), [0, 0], [32, 12], 2)
     layer = new Node2D()
     txt = new Text2D(createText(FONT), [0, 20])
@@ -27,8 +26,6 @@ export class Loader extends Node2D {
         this.layer
             .add(this.txt)
             .add(new Overlay)
-        //@ts-ignore
-        doc.monetization && on(doc.monetization, "monetizationstart", () => this.life = 1);
         on("click keydown", this.load, doc)
         this.init()
     }
@@ -65,7 +62,7 @@ export class Loader extends Node2D {
             [cord, "8|4|8a2e3,4e3b3,2eb3bb3,2d3a3|12", .2],
             [chip, "1a1,1e2,1c2,1e2,1a1,1e2,1c2,1e2,1a1,1eb2,1b1,1eb2,1a1,1f2,1bb1,1f2|14", .2]
         ]);
-        this.parent.add(new Game(this.life))
+        this.parent.add(new Game)
         await delay(.5, t => {
             set(this.logo.pos, 0, t ** 4 * -60)
             this.logo.scl = (1 - t * t) + 1

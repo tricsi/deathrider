@@ -7,6 +7,7 @@ import { Loader } from "./game/scene/Loader"
 import { on } from "./modules/event"
 import { Node } from "./core/Node"
 import { doc, fs, mobile } from "./modules/utils"
+import { STATE } from "./config"
 
 const scenes = new Node
 
@@ -25,3 +26,6 @@ createContext(() => {
     scenes.add(new Loader)
     update()
 })
+
+//@ts-ignore
+doc.monetization && on(doc.monetization, "monetizationstart", () => STATE.life = 1);
