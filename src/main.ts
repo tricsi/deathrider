@@ -5,9 +5,8 @@ import { schedule, update } from "./modules/scheduler"
 import { physics } from "./core/2d/Poly2D"
 import { Loader } from "./game/scene/Loader"
 import { on } from "./modules/event"
-import { Game } from "./game/scene/Game"
 import { Node } from "./core/Node"
-import { fs, mobile } from "./modules/utils"
+import { doc, fs, mobile } from "./modules/utils"
 
 const scenes = new Node
 
@@ -22,8 +21,7 @@ schedule(() => {
 }, 9)
 
 createContext(() => {
+    on("click keydown", () => mobile && fs(), doc);
     scenes.add(new Loader)
-    on("ready", () => scenes.add(new Game))
-    on("click keydown", () => mobile && fs(), document);
     update()
 })

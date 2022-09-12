@@ -58,7 +58,7 @@ export class Node {
 
     protected compute() {
         const { color, tint, parent } = this
-        this.parent ? multiply(parent.tint, color, tint) : copy(tint, color)
+        parent ? multiply(parent.tint, color, tint) : copy(tint, color)
     }
 
 }

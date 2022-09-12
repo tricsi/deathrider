@@ -7,7 +7,7 @@ import { createSprite } from "../../modules/2d/context"
 import { emit } from "../../modules/event"
 import input from "../../modules/input/keyboard"
 import { m3scale } from "../../modules/math/mat3"
-import { set, X, Y } from "../../modules/math/math"
+import { A, rgba, set, X, Y } from "../../modules/math/math"
 import { delay } from "../../modules/scheduler"
 import { rnd } from "../../modules/utils"
 
@@ -17,6 +17,7 @@ export class Skull extends Body2D {
     max = 200
     thr = 0
     spin = 0
+    life = 0
     poly = new Poly2D([-7, -7, 14, 14], 1, 2)
     head = new Sprite2D(createSprite("skull"), [-8, -8])
     jaw = new Sprite2D(createSprite("jaw", 8), [-2, 0])
@@ -32,40 +33,53 @@ export class Skull extends Body2D {
         u: (m, t) => m3scale(m, 1.2 - t)
     }, [-7, 0])
 
-    collide = ({layer}: Poly2D) => {
-        switch (layer) {
-            case 2:
+    collide = async ({ layer }: Poly2D) => {
+        if (layer == 2) {
+            emit("bonk")
+            this.death()
+            if (this.life--) {
+                await delay(2)
+                this.start(this.life)
+            } else {
                 emit("death")
-                break;
+            }
         }
     }
 
     constructor() {
         super()
-        const {poly, head, jaw, jet} = this
+        const { poly, head, jaw, jet } = this
         poly.on = this.collide
         jet.start()
         this.add(jaw)
             .add(head)
             .add(poly)
+            .add(jet)
         this.reset()
     }
 
     reset() {
-        const {acc, spd, pos, jet, poly} = this
+        const { acc, spd, pos } = this
         set(acc, 0)
         set(spd, 0, 0)
         set(pos, -8, 64)
         this.thr = 0
         this.rot = 0
         this.spin = 0
-        poly.active = true
-        this.add(jet)
     }
 
-    async start() {
+    async start(life = 0) {
         this.reset()
-        delay(1, (t) => this.pos[X] = (1 - ((1 - t) ** 3)) * 52 - 8)
+        this.life = life
+        this.color = life
+            ? rgba(1, .8, .3)
+            : rgba(1, 1, 1)
+        this.jet.active = true
+        await delay(1, (t) => {
+            this.pos[X] = (1 - ((1 - t) ** 3)) * 52 - 8
+            this.color[A] = Math.cos((1 - t) * 20) * .3 + .8
+        })
+        this.poly.active = true
     }
 
     init() {
@@ -78,8 +92,8 @@ export class Skull extends Body2D {
         set(this.spd, 0, -this.max)
         this.spin = (rnd() - .5) * 30
         this.spin += Math.sign(this.spin) * 10
+        this.jet.active = false
         this.poly.active = false
-        this.del(this.jet)
     }
 
     update(delta: number) {

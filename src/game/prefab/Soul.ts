@@ -5,7 +5,7 @@ import { Sprite2D } from "../../core/2d/Sprite2D"
 import { Spawner } from "../../core/Spawner"
 import { createSprite } from "../../modules/2d/context"
 import { emit } from "../../modules/event"
-import { set, X, Y } from "../../modules/math/math"
+import { set, Y } from "../../modules/math/math"
 import { delay } from "../../modules/scheduler"
 import { rnd } from "../../modules/utils"
 

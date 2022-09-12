@@ -9,8 +9,7 @@ import { emit } from "../../modules/event";
 import { A, add, copy, set, X } from "../../modules/math/math";
 import { delay } from "../../modules/scheduler";
 
-export default class Bullet extends Body2D
-{
+export default class Bullet extends Body2D {
     poly = new Poly2D([-3, -4, 6, 6], 4, 10)
     sprite = new Sprite2D(createSprite("fire", 8), [-4, -4])
 

@@ -4,6 +4,7 @@ import { mixer, play } from "../../modules/audio";
 import { IEvent, on } from "../../modules/event";
 import { X } from "../../modules/math/math";
 import { delay } from "../../modules/scheduler";
+import { doc } from "../../modules/utils";
 import { Bats } from "../prefab/Bat";
 import { Blocks } from "../prefab/Block";
 import { Bullets } from "../prefab/Bullet";
@@ -25,9 +26,9 @@ export class Game extends Node2D {
     graves = new Graves
     ground = new Ground
     bullets = new Bullets(this.skull.pos)
-    theme: AudioBufferSourceNode;
+    theme: AudioBufferSourceNode
 
-    constructor() {
+    constructor(life: number) {
         super()
         this.add(this.hud)
             .add(this.ground)
@@ -40,37 +41,50 @@ export class Game extends Node2D {
             .add(new Sky)
         on("all", ([_, name]: IEvent) => play(name))
         on("death", async () => {
-            this.skull.death()
             await delay(2, t => {
                 this.speed = 1 - t * t
                 mixer("music", (1 - t * t) * MUSIC)
             })
-            this.theme.stop()
+            this.stop()
             this.runs = false
         });
         on("down", ([key]: IEvent<string>) => {
             if (!this.runs) {
-                this.start()
+                SPEED[X] = -100
+                this.hud.start()
+                this.skull.start(life)
+                this.blocks.clear()
+                this.graves.clear()
+                this.bullets.clear()
+                this.bats.clear()
+                this.speed = 1
+                this.runs = true
+                this.play()
             } else if (key === "Escape") {
                 this.speed = this.speed ? 0 : 1
             } else {
                 this.skull.init()
             }
         });
+        on("visibilitychange", () => {
+            if (this.runs) {
+                doc.hidden ? this.stop() : this.play()
+            }
+        }, doc)
     }
 
-    start() {
-        SPEED[X] = -100
-        this.hud.start()
-        this.skull.start()
-        this.blocks.clear()
-        this.graves.clear()
-        this.bullets.clear()
-        this.bats.clear()
-        this.speed = 1
-        this.runs = true
-        mixer("music", MUSIC)
-        this.theme = play("theme", true, "music")
+    play() {
+        if (!this.theme) {
+            mixer("music", MUSIC)
+            this.theme = play("theme", true, "music")
+        }
+    }
+
+    stop() {
+        if (this.theme) {
+            this.theme.stop()
+            this.theme = null
+        }
     }
 
     update(delta: number): void {
