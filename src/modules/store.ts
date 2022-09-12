@@ -1,4 +1,4 @@
-const prefix = location.pathname.replaceAll('/', '') + '_'
+const prefix = 'deathrider_'
 const defaultStore: Storage = localStorage
 
 export function save<T = any>(name: string, value?: T, store: Storage = defaultStore) {
